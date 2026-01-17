@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { Trash2, Edit, Plus, X, Search, Download, ChevronLeft, ChevronRight, AlertCircle, LogOut, User, MapPin, Shield, Lock, ExternalLink, Folder, PieChart, BarChart3, List, RefreshCw } from 'lucide-react';
+import { Trash2, Edit, Plus, X, Search, Download, ChevronLeft, ChevronRight, AlertCircle, LogOut, User, MapPin, Shield, Lock, ExternalLink, Folder, PieChart, BarChart3, RefreshCw } from 'lucide-react';
 
 // --- CONFIGURATION ---
 // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
