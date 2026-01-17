@@ -114,6 +114,26 @@ const INITIAL_DUMMY_DATA = {
     ],
   };
 
+// --- STATIC TABLE CONFIGURATION (Moved outside component) ---
+const tableConfigs = {
+  reports: { label: 'Reports', isReport: true, roles: ['superadmin', 'admin', 'viewer'] },
+  costAnalysis: { label: 'Cost Analysis', isReport: true, roles: ['superadmin', 'admin', 'viewer'] },
+  users: { columns: [{ key: 'id', label: 'ID' }, { key: 'name', label: 'Name' }, { key: 'email', label: 'Email' }, { key: 'role', label: 'Role' }, { key: 'password', label: 'Password' }], roles: ['superadmin'] },
+  projectManagers: { columns: [{ key: 'id', label: 'ID' }, { key: 'name', label: 'Name' }, { key: 'email', label: 'Email' }, { key: 'status', label: 'Status' }], roles: ['superadmin'] },
+  clients: { columns: [{ key: 'id', label: 'ID' }, { key: 'company_name', label: 'Company Name' }, { key: 'address', label: 'Address' }, { key: 'contact_name', label: 'Contact Name' }, { key: 'contact_mail', label: 'Contact Mail' }, { key: 'contact_phone', label: 'Contact Phone' }, { key: 'sector', label: 'Sector' }], roles: ['superadmin', 'admin'] },
+  contractors: { label: 'Contractors List', columns: [{ key: 'id', label: 'ID' }, { key: 'company_name', label: 'Company Name' }, { key: 'address', label: 'Address' }, { key: 'contact_name', label: 'Contact Name' }, { key: 'email', label: 'Email' }, { key: 'phone', label: 'Phone' }], roles: ['superadmin', 'admin'] },
+  externalConsultants: { columns: [{ key: 'id', label: 'ID' }, { key: 'name', label: 'Consultant Name' }, { key: 'specialty', label: 'Specialty' }], roles: ['superadmin'] },
+  roles: { columns: [{ key: 'id', label: 'ID' }, { key: 'name', label: 'Role Name' }], roles: ['superadmin'] },
+  projectManagementInfo: { columns: [{ key: 'id', label: 'ID' }, { key: 'op_number', label: 'OP Number' }, { key: 'project_name', label: 'Project Name' }, { key: 'name', label: 'Name' }, { key: 'role', label: 'Role' }, { key: 'fee', label: 'Fee' }, { key: 'cost', label: 'Cost' }, { key: 'currency', label: 'Currency' }, { key: 'duration', label: 'Duration (months)' }, { key: 'profit', label: 'Profit', computed: true }, { key: 'total_fee', label: 'Total Fee', computed: true }, { key: 'total_profit', label: 'Total Profit', computed: true }], roles: ['superadmin', 'admin'] },
+  contractedWorks: { columns: [{ key: 'id', label: 'ID' }, { key: 'name', label: 'Work Name' }], roles: ['superadmin', 'admin'] },
+  projectContractors: { columns: [{ key: 'id', label: 'ID' }, { key: 'op_number', label: 'OP Number' }, { key: 'project_name', label: 'Project Name' }, { key: 'contractor_name', label: 'Contractor Name' }, { key: 'contracted_works', label: 'Contracted Works' }, { key: 'contract_date', label: 'Contract Date' }, { key: 'start', label: 'Start' }, { key: 'end', label: 'End' }, { key: 'contract_amount', label: 'Contract Amount' }, { key: 'contract_currency', label: 'Contract Currency' }, { key: 'fx_rate', label: 'FX Rate' }, { key: 'amount_try', label: 'Amount (₺)', computed: true }], roles: ['superadmin', 'admin'] },
+  serviceTypes: { columns: [{ key: 'id', label: 'ID' }, { key: 'name', label: 'Service Type' }], roles: ['superadmin'] },
+  projectTypes: { columns: [{ key: 'id', label: 'ID' }, { key: 'name', label: 'Project Type' }], roles: ['superadmin'] },
+  contractTypes: { columns: [{ key: 'id', label: 'ID' }, { key: 'name', label: 'Contract Type' }], roles: ['superadmin'] },
+  projects: { columns: [{ key: 'id', label: 'ID' }, { key: 'name', label: 'Project Name' }, { key: 'client_name', label: 'Client Name' }, { key: 'manager_name', label: 'Project Manager' }, { key: 'op_number', label: 'OP Number' }, { key: 'status', label: 'Status' }, { key: 'project_location', label: 'Project Location' }, { key: 'project_coordinates', label: 'Project Coordinates' }, { key: 'project_type', label: 'Project Type' }, { key: 'service_type', label: 'Service Type' }, { key: 'area_sqm', label: 'Area (sqm)' }, { key: 'contract_type', label: 'Contract Type' }, { key: 'contract_date', label: 'Contract Date' }, { key: 'project_folder', label: 'Project Folder' }, { key: 'pm_fee', label: 'PM Fee', computed: true }, { key: 'currency', label: 'Currency' }], roles: ['superadmin', 'admin', 'viewer'] },
+  invoices: { columns: [{ key: 'id', label: 'ID' }, { key: 'number', label: 'Invoice Number' }, { key: 'date', label: 'Date' }, { key: 'amount', label: 'Amount' }, { key: 'currency', label: 'Currency' }, { key: 'fx_rate', label: 'FX Rate' }, { key: 'amount_try', label: 'Amount (₺)', computed: true }, { key: 'op_number', label: 'OP Number' }, { key: 'status', label: 'Status' }], roles: ['superadmin', 'admin'] },
+};
+
 // --- Components ---
 
 const DeleteModal = ({ isOpen, onClose, onConfirm }) => {
@@ -156,10 +176,8 @@ const SimplePieChart = ({ data }) => {
             const x2 = Math.cos(currentAngle + sliceAngle);
             const y2 = Math.sin(currentAngle + sliceAngle);
             const isLargeArc = sliceAngle > Math.PI ? 1 : 0;
-            
             const pathData = `M 0 0 L ${x1} ${y1} A 1 1 0 ${isLargeArc} 1 ${x2} ${y2} Z`;
             const color = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#6366F1', '#14B8A6'][i % 8];
-            
             currentAngle += sliceAngle;
             return (
               <path key={slice.name} d={pathData} fill={color} stroke="white" strokeWidth="0.02" className="hover:opacity-80 transition-opacity cursor-pointer">
@@ -185,9 +203,16 @@ const SimplePieChart = ({ data }) => {
 const ProjectMap = ({ projects }) => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
-  const markersRef = useRef([]);
+  const [mapReady, setMapReady] = useState(false);
 
   useEffect(() => {
+    // Check if Leaflet is loaded
+    if (window.L && !mapReady) {
+       setMapReady(true);
+       return;
+    }
+    
+    // Load CSS
     if (!document.querySelector('link[href*="leaflet.css"]')) {
       const link = document.createElement('link');
       link.rel = 'stylesheet';
@@ -196,45 +221,42 @@ const ProjectMap = ({ projects }) => {
       link.crossOrigin = '';
       document.head.appendChild(link);
     }
+    
+    // Load JS
     if (!document.querySelector('script[src*="leaflet.js"]')) {
       const script = document.createElement('script');
       script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
       script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
       script.crossOrigin = '';
       script.async = true;
-      script.onload = () => initMap();
+      script.onload = () => setMapReady(true);
       document.body.appendChild(script);
-    } else {
-      if (window.L) initMap();
     }
-    return () => {
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-      }
-    };
-  }, []);
+  }, [mapReady]);
 
+  // Initialize/Update map when mapReady or projects change
   useEffect(() => {
-    if (mapInstanceRef.current && window.L) {
-      updateMarkers();
+    if (!mapReady || !window.L || !mapRef.current) return;
+    
+    const L = window.L;
+    
+    // Create map if not exists
+    if (!mapInstanceRef.current) {
+        const map = L.map(mapRef.current).setView([39.9334, 32.8597], 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+        mapInstanceRef.current = map;
     }
-  }, [projects]);
 
-  const initMap = () => {
-    if (mapInstanceRef.current || !mapRef.current) return;
-    const L = window.L;
-    const map = L.map(mapRef.current).setView([39.9334, 32.8597], 6);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
-    mapInstanceRef.current = map;
-    updateMarkers();
-  };
-
-  const updateMarkers = () => {
-    const L = window.L;
     const map = mapInstanceRef.current;
-    markersRef.current.forEach(marker => marker.remove());
-    markersRef.current = [];
+
+    // Clear old markers (simple way: remove all layers and re-add tiles/markers, or use layerGroup. For simplicity here: plain markers)
+    // In a real app we'd track marker references. Here we just clear the map mostly.
+    map.eachLayer((layer) => {
+        if (!layer._url) { // Don't remove tiles
+            map.removeLayer(layer);
+        }
+    });
+
     const bounds = L.latLngBounds();
 
     projects.forEach(project => {
@@ -253,14 +275,16 @@ const ProjectMap = ({ projects }) => {
       const marker = L.marker([lat, lon], { icon: customIcon }).addTo(map).bindPopup(`<div class="text-center"><div class="font-bold text-gray-900">${project.name}</div><div class="text-xs text-gray-500">${project.project_location}</div></div>`);
       marker.on('mouseover', function(e) { this.openPopup(); });
       marker.on('mouseout', function(e) { this.closePopup(); });
-      markersRef.current.push(marker);
       bounds.extend([lat, lon]);
     });
 
-    if (markersRef.current.length > 0) {
-      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 10 });
+    if (projects.length > 0 && !bounds.isValid()) {
+         // handle case
+    } else if (projects.length > 0) {
+        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 10 });
     }
-  };
+
+  }, [mapReady, projects]);
 
   return <div ref={mapRef} className="w-full h-[400px] rounded-xl overflow-hidden border border-gray-300 z-0 bg-gray-100" />;
 };
@@ -1154,6 +1178,172 @@ const ReportsView = ({ data }) => {
           </div>
         </div>
       )}
+    </div>
+  );
+};
+
+// --- Main App ---
+export default function App() {
+  const [user, setUser] = useState(null);
+  const [data, setData] = useState(INITIAL_DUMMY_DATA); // Init with dummy
+  const [activeTab, setActiveTab] = useState('reports');
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, table: null, id: null });
+  const [loading, setLoading] = useState(false);
+
+  // --- GOOGLE SHEETS FETCHING LOGIC ---
+  useEffect(() => {
+    if (API_URL) {
+      setLoading(true);
+      fetch(API_URL)
+        .then(res => res.json())
+        .then(json => {
+          if (json.status === 'success') {
+            // Merge response data with initial dummy structure to ensure all keys exist
+            // This handles cases where the sheet might be empty initially
+            setData(prev => ({
+                ...prev,
+                ...json.data
+            }));
+          } else {
+            console.error("Google Sheets API Error:", json.message);
+          }
+        })
+        .catch(err => console.error("Fetch Error:", err))
+        .finally(() => setLoading(false));
+    }
+  }, []);
+
+  const syncToSheet = async (action, table, payloadId, payloadData) => {
+    if (!API_URL) return; // Only sync if API is configured
+    
+    try {
+      await fetch(API_URL, {
+        method: 'POST',
+        mode: 'no-cors', // Google Apps Script Web App requirement for simple requests
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: action,
+          table: table,
+          id: payloadId,
+          data: payloadData
+        })
+      });
+      // Note: 'no-cors' mode means we can't read the response, 
+      // so we optimistically update UI or re-fetch if critical.
+      // For this demo, we rely on local state update which happens in handleAdd/Edit/Delete
+    } catch (e) {
+      console.error("Sync Error:", e);
+    }
+  };
+
+  const getAvailableTabs = useMemo(() => {
+    if (!user) return [];
+    return Object.keys(tableConfigs).filter(tab => tableConfigs[tab].roles.includes(user.role));
+  }, [user]);
+
+  // Use useEffect to handle side-effect of state change, but depend on memoized availableTabs
+  useEffect(() => {
+    if (user && !getAvailableTabs.includes(activeTab) && getAvailableTabs.length > 0) {
+      setActiveTab(getAvailableTabs[0]);
+    }
+  }, [user, getAvailableTabs, activeTab]);
+
+  const handleEdit = (table, id, updatedRow) => {
+    setData({ ...data, [table]: data[table].map(row => row.id === id ? { ...row, ...updatedRow } : row) });
+    syncToSheet('edit', table, id, updatedRow);
+  };
+
+  const handleDeleteRequest = (table, id) => {
+    setDeleteModal({ isOpen: true, table, id });
+  };
+
+  const handleConfirmDelete = () => {
+    const { table, id } = deleteModal;
+    if (table && id) {
+      setData({ ...data, [table]: data[table].filter(row => row.id !== id) });
+      syncToSheet('delete', table, id, null);
+    }
+    setDeleteModal({ isOpen: false, table: null, id: null });
+  };
+
+  const handleAdd = (table, newRow) => {
+    setData({ ...data, [table]: [...data[table], newRow] });
+    syncToSheet('add', table, null, newRow);
+  };
+
+  const handleSignOut = () => {
+    setUser(null);
+    setActiveTab('reports');
+  };
+
+  if (!user) {
+    return <SignInPage onSignIn={setUser} users={data.users} />;
+  }
+
+  const config = tableConfigs[activeTab];
+  const tabLabel = config?.label || (activeTab.charAt(0).toUpperCase() + activeTab.slice(1).replace(/([A-Z])/g, ' $1').trim());
+
+  return (
+    <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-20 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-sm">P</div>
+              <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-indigo-700">ProjectDBMS</h1>
+            </div>
+            <div className="flex items-center gap-6">
+               <div className="hidden md:flex items-center text-right">
+                  <div className="mr-3">
+                    <p className="text-sm font-semibold text-gray-900">{user.name}</p>
+                    <p className="text-xs text-gray-500 capitalize flex items-center justify-end gap-1">
+                        {user.role === 'superadmin' && <Shield size={10} className="text-purple-600"/>}
+                        {user.role}
+                    </p>
+                  </div>
+                  <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600"><User size={20} /></div>
+               </div>
+               <div className="h-8 w-px bg-gray-200 hidden md:block"></div>
+               <button onClick={handleSignOut} className="flex items-center gap-2 text-gray-500 hover:text-red-600 transition-colors" title="Sign Out"><LogOut size={20} /></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8 overflow-x-auto pb-2">
+            <div className="flex flex-nowrap gap-2">
+                {getAvailableTabs.map(tab => (
+                <button key={tab} onClick={() => setActiveTab(tab)} className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 border whitespace-nowrap ${activeTab === tab ? 'bg-blue-600 text-white border-blue-600 shadow-md' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-blue-600'}`}>
+                    {tableConfigs[tab].label || tab.charAt(0).toUpperCase() + tab.slice(1).replace(/([A-Z])/g, ' $1').trim()}
+                </button>
+                ))}
+            </div>
+        </div>
+
+        <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+          {activeTab === 'reports' ? (
+            <ReportsView data={data} />
+          ) : activeTab === 'costAnalysis' ? (
+            <ConstructionCostAnalysis data={data} />
+          ) : (
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="mb-6 flex justify-between items-end">
+                    <div>
+                        <h2 className="text-2xl font-bold text-gray-800 capitalize">{tabLabel} Management</h2>
+                        <p className="text-gray-500 text-sm mt-1 flex items-center gap-2">
+                            Manage records for {tabLabel.toLowerCase()}.
+                            {user.role === 'viewer' && <span className="flex items-center gap-1 text-orange-600 bg-orange-50 px-2 py-0.5 rounded text-xs"><Lock size={12}/> Read Only</span>}
+                        </p>
+                    </div>
+                    {loading && <div className="text-blue-600 flex items-center gap-2 text-sm"><RefreshCw className="animate-spin" size={16}/> Syncing...</div>}
+                </div>
+                <DataTable data={data[activeTab] || []} columns={config?.columns || []} onEdit={(id, row) => handleEdit(activeTab, id, row)} onDelete={(id) => handleDeleteRequest(activeTab, id)} onAdd={(row) => handleAdd(activeTab, row)} tableName={activeTab} allData={data} userRole={user.role} />
+            </div>
+          )}
+        </div>
+      </div>
+      <DeleteModal isOpen={deleteModal.isOpen} onClose={() => setDeleteModal({ isOpen: false, table: null, id: null })} onConfirm={handleConfirmDelete} />
     </div>
   );
 }
